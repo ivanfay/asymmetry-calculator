@@ -236,28 +236,28 @@ int main(int argc, char* argv[]) {
             hist_n_vec.push_back(ptrScale(pion_hist_n, config.getPI_sub_scale()));
             hist_n_vec.push_back(ptrScale(rnd_hist_n, s));
 
-            SaveAsymetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
         } else if (particle == "pion") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(pion_hist_p);
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(pion_hist_n);
 
-            SaveAsymetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
         } else if (particle == "dummyK") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(ptrScale(dum_hist_p, s_dum));
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(ptrScale(dum_hist_n, s_dum));
 
-            SaveAsymetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
         } else if (particle == "dummyP") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(ptrScale(dum_hist_pion_p, s_dum));
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(ptrScale(dum_hist_pion_n, s_dum));
 
-            SaveAsymetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
         }
 
         // Clean memory and speed up execution.

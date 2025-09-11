@@ -284,7 +284,7 @@ void CheckNaming(std::string who_named) {
     }
 }
 
-void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TH1D* storage, Int_t phi_bin, std::string filename) { 
+void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TH1D* storage, Int_t phi_bin, std::string filename) { 
     ConfigManager& config = ConfigManager::getInstance();
 
     Double_t low, high, polarity = 0.38;
@@ -294,6 +294,8 @@ void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH
         high = config.getMMK_high();
         // low = 1.12;
         // high = 1.168;
+
+        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
         storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
@@ -305,6 +307,8 @@ void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH
         low = config.getMMK_low();
         high = config.getMMK_high();
 
+        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
         storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
@@ -315,6 +319,8 @@ void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH
         low = config.getMMK_low();
         high = config.getMMK_high();
 
+        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+
         storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
 
@@ -322,6 +328,8 @@ void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH
     } else if (ptcl == "dummyK" || ptcl == "dummyP") {
         low = config.getMMK_low();
         high = config.getMMK_high();
+
+        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));

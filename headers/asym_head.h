@@ -91,7 +91,7 @@ void FormatInput(std::string &input, std::string &particle, std::string &shms_po
 
 void CheckNaming(std::string who_named);
 
-void SaveAsymetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TH1D* storage, Int_t phi_bin, std::string filename);
+void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TH1D* storage, Int_t phi_bin, std::string filename);
 
 void SaveCanvas(TCanvas* canv, std::string particle, std::string shms_pos, std::string t_bin);
 
