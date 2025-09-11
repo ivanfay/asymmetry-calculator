@@ -88,8 +88,8 @@ int main(int argc, char* argv[]) {
     std::string gen_Pion_rand_cut = HMS + " && " + CTime_Rand + " && " + RF_Pion_PID; 
 
     std::string csv_name = "output/Yields_"+particle+"_"+shms_pos+"_"+"-t"+std::to_string(t_high).substr(1)+"-"+std::to_string(t_low).substr(1) + ".csv";
-    // Assymetry histogram -pi to +pi
-    TH1D *asym_hist = new TH1D("asym_hist","Asym",phi_bins,-TMath::Pi(),TMath::Pi());
+    // Asymmetry grah -pi to +pi
+    auto asym_hist = new TGraphAsymmErrors(phi_bins); //TH1D("asym_hist","Asym",phi_bins,-TMath::Pi(),TMath::Pi());
 
     // phi bin partitioning
     Double_t single_cut_val = (2 * TMath::Pi()) / phi_bins;
@@ -99,6 +99,7 @@ int main(int argc, char* argv[]) {
         auto check1 = std::chrono::high_resolution_clock::now();
         // phi uper bin limit
         cut_sum += single_cut_val;
+        Double_t phi_bin_middle = cut_sum - (single_cut_val / 2);
 
         // Phi bining (dynamic) cuts for data
         std::string phi_cut_upper = ph_q+"<" + std::to_string(cut_sum);
@@ -236,28 +237,28 @@ int main(int argc, char* argv[]) {
             hist_n_vec.push_back(ptrScale(pion_hist_n, config.getPI_sub_scale()));
             hist_n_vec.push_back(ptrScale(rnd_hist_n, s));
 
-            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, phi_bin_middle, i, csv_name);
         } else if (particle == "pion") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(pion_hist_p);
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(pion_hist_n);
 
-            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, phi_bin_middle, i, csv_name);
         } else if (particle == "dummyK") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(ptrScale(dum_hist_p, s_dum));
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(ptrScale(dum_hist_n, s_dum));
 
-            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, phi_bin_middle, i, csv_name);
         } else if (particle == "dummyP") {
             std::vector<TH1D*> hist_p_vec;
             hist_p_vec.push_back(ptrScale(dum_hist_pion_p, s_dum));
             std::vector<TH1D*> hist_n_vec;
             hist_n_vec.push_back(ptrScale(dum_hist_pion_n, s_dum));
 
-            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, i, csv_name);
+            SaveAsymmetry(particle, hist_p_vec, hist_n_vec, asym_hist, phi_bin_middle, i, csv_name);
         }
 
         // Clean memory and speed up execution.

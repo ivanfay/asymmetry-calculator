@@ -139,7 +139,8 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
     Int_t bin_high = histP_vec[0]->FindBin(high);
 
     Double_t pol = 0.38;
-    Double_t asym, err;
+    Double_t asym;
+    Double_t err[2];
 
     if (ptcl == "kaonL" || ptcl == "kaonS") {
         Double_t rawY_p, pionY_p, rndY_p, rawY_n, pionY_n, rndY_n;
@@ -158,15 +159,17 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
         Double_t sum_n = rawY_n + pionY_n + rndY_n;
 
         if ((pol*pow(Y_p + Y_n, 2)) == 0 || Y_p + Y_n == 0 || ((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n) < 0) {
-            err = 10;
+            err[0] = 10;
+            err[1] = 10;
             asym = 0;
         } else {
-            err = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
+            err[0] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
+            err[1] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
             asym = (1/pol) * ((Y_p - Y_n) / (abs(Y_p + Y_n)));
         }
 
         if (!header_written){
-            out << "Phi_bin, raw Yield p, raw Yield n, pion Yield p, pion Yield n, rnd Yield p, rnd Yield n, net Yield p, net Yield n, Asym, Asym_err \n";
+            out << "Phi_bin, raw Yield p, raw Yield n, pion Yield p, pion Yield n, rnd Yield p, rnd Yield n, net Yield p, net Yield n, Asym, Asym_errL, Asym_errH  \n";
             header_written = true;
         }
 
@@ -182,14 +185,16 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
 
         if (Y_p*Y_n == 0 || Y_n + Y_p == 0) {
             asym = 0;
-            err = 0;
+            err[0] = 0;
+            err[1] = 0;
         } else {
             asym = 1/pol * ((Y_p - Y_n) / (abs(Y_p + Y_n)));
-            err = (2/pol)*((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
+            err[0] = (2/pol)*((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
+            err[1] = (2/pol)*((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
         }
 
         if (!header_written){
-            out << "Phi_bin, Yield_p, Yield_n, Asym, Asym_err \n";
+            out << "Phi_bin, Yield_p, Yield_n, Asym, Asym_errL, Asym_errH \n";
             header_written = true;
         }
 
@@ -284,7 +289,7 @@ void CheckNaming(std::string who_named) {
     }
 }
 
-void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TH1D* storage, Int_t phi_bin, std::string filename) { 
+void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, TGraphAsymmErrors* storage, Double_t phi_bin_mid, Int_t phi_bin, std::string filename) { 
     ConfigManager& config = ConfigManager::getInstance();
 
     Double_t low, high, polarity = 0.38;
@@ -298,8 +303,8 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
-        storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
-        storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->AddPoint(phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
 
         yield_to_CSV(histP_vec, histN_vec, low, high, phi_bin, ptcl,filename);
 
@@ -310,8 +315,8 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
-        storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
-        storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->AddPoint(phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->SetPointError(phi_bin_mid, 0, 0, asym_err[0], asym_err[1]);
 
         yield_to_CSV(histP_vec, histN_vec, low, high, phi_bin, ptcl, filename);
 
@@ -321,8 +326,8 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
 
         Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
-        storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
-        storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->AddPoint(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
 
         yield_to_CSV(histP_vec, histN_vec, low, high, phi_bin, ptcl, filename);
     } else if (ptcl == "dummyK" || ptcl == "dummyP") {
@@ -331,8 +336,8 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
 
         Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
-        storage->SetBinContent(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
-        storage->SetBinError(phi_bin, assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->AddPoint(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
 
         yield_to_CSV(histP_vec, histN_vec, low, high, phi_bin, ptcl, filename);
 
