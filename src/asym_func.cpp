@@ -76,12 +76,12 @@ Double_t assymetry(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, D
 }
 
 // Same function as assymetry, but for the error of assymetry
-Double_t assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl){
+Double_t* assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl){
     // Find bins for the range selected
     Int_t bin_low = histP_vec[0]->FindBin(low);
     Int_t bin_high = histP_vec[0]->FindBin(high);
 
-    Double_t err;
+    Double_t err[2];
 
     if (ptcl == "kaonL" || ptcl == "kaonS") {
         Double_t rawY_p, pionY_p, rndY_p, rawY_n, pionY_n, rndY_n;
@@ -100,9 +100,11 @@ Double_t assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_
         Double_t sum_n = rawY_n + pionY_n + rndY_n;
 
         if ((pol*pow(Y_p + Y_n, 2)) == 0 || ((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n) < 0) {
-            err = 10;
+            err[0] = 10;
+            err[1] = 10;
         } else {
-            err = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
+            err[0] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
+            err[1] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
         }
 
         
@@ -111,9 +113,11 @@ Double_t assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_
         Double_t Y_n = histN_vec[0]->Integral(bin_low, bin_high);
 
         if (Y_p*Y_n == 0 || Y_n + Y_p == 0) {
-            err = 10;
+            err[0] = 10;
+            err[1] = 10;
         } else {
-            err = (2/pol) * ((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
+            err[0] = (2/pol) * ((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
+            err[1] = (2/pol) * ((sqrt(abs(Y_p*Y_n)))/sqrt(pow(abs(Y_p+Y_n),3)));
         }
     }
 

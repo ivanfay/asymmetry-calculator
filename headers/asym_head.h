@@ -83,7 +83,7 @@ TH1D* IntegralScale(TH1D* hist1, TH1D* hist2, Double_t high, Double_t low);
 TH1D* ptrScale(TH1D* hist, Double_t scale);
 
 Double_t assymetry(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl);
-Double_t assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl);
+Double_t* assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl);
 
 void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Int_t phi_bin, std::string ptcl, const std::string filename);
 
