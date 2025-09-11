@@ -1,0 +1,17 @@
+{
+    "CT_Kaon_high": 1.5,
+    "CT_Kaon_low": -0.5,
+    "CT_Pion_high": -0.5,
+    "CT_Pion_low": -2.5,
+    "CT_Rand_high_left": -14.5,
+    "CT_Rand_high_right": 15.5,
+    "CT_Rand_low_left": -8.5,
+    "CT_Rand_low_right": 9.5,
+    "H_cal_low": 0.5,
+    "H_cer_low": 2,
+    "RF_high": 1.15,
+    "RF_low": 0.2,
+    "PI_sub_scale": 0.0169,
+    "MMK_low": 1.080,
+    "MMK_high": 1.1803
+}

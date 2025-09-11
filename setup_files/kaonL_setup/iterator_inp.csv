@@ -1,0 +1,10 @@
+filename,particle,shms angle,t min,tmax
+Q0p5W2p40right_highe_kaon,kaonL,right,0.06225,0.09975
+Q0p5W2p40right_highe_kaon,kaonL,right,0.09975,0.12375
+Q0p5W2p40right_highe_kaon,kaonL,right,0.12375,0.19125
+Q0p5W2p40center_highe_kaon,kaonL,center,0.06225,0.09975
+Q0p5W2p40center_highe_kaon,kaonL,center,0.09975,0.12375
+Q0p5W2p40center_highe_kaon,kaonL,center,0.12375,0.19125
+Q0p5W2p40left_highe_kaon,kaonL,left,0.06225,0.09975
+Q0p5W2p40left_highe_kaon,kaonL,left,0.09975,0.12375
+Q0p5W2p40left_highe_kaon,kaonL,left,0.12375,0.19125
