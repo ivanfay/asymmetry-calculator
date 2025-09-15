@@ -76,12 +76,12 @@ Double_t assymetry(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, D
 }
 
 // Same function as assymetry, but for the error of assymetry
-Double_t* assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl){
+std::array<Double_t, 2> assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Double_t low, Double_t high, Double_t pol, std::string ptcl){
     // Find bins for the range selected
     Int_t bin_low = histP_vec[0]->FindBin(low);
     Int_t bin_high = histP_vec[0]->FindBin(high);
 
-    Double_t err[2];
+    std::array<Double_t, 2> err;
     Double_t pol_err[2] = {pol*0.03, pol*0.01}; // i = 0 is -3% polarization error, i = 1 is +1% polarization error
     Double_t asym;
 
@@ -326,7 +326,7 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         // low = 1.12;
         // high = 1.168;
 
-        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+        std::array<Double_t, 2> asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
         storage->AddPoint(phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
@@ -338,7 +338,7 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         low = config.getMMK_low();
         high = config.getMMK_high();
 
-        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+        std::array<Double_t, 2> asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
         storage->AddPoint(phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
@@ -350,7 +350,7 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         low = config.getMMK_low();
         high = config.getMMK_high();
 
-        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+        std::array<Double_t, 2> asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         storage->AddPoint(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
@@ -360,7 +360,7 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         low = config.getMMK_low();
         high = config.getMMK_high();
 
-        Double_t* asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
+        std::array<Double_t, 2> asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         storage->AddPoint(phi_bin, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
