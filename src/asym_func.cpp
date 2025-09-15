@@ -329,7 +329,7 @@ void SaveAsymmetry(std::string ptcl, std::vector<TH1D*> histP_vec, std::vector<T
         std::array<Double_t, 2> asym_err = assymetry_error(histP_vec, histN_vec, low, high, polarity, ptcl);
 
         // Integrate kaon output and combine positive and negative to calculate the assimetry. Save in histogram
-        storage->AddPoint(phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
+        storage->SetPoint(phi_bin, phi_bin_mid, assymetry(histP_vec, histN_vec, low, high, polarity, ptcl));
         storage->SetPointError(phi_bin, 0, 0, asym_err[0], asym_err[1]);
 
         yield_to_CSV(histP_vec, histN_vec, low, high, phi_bin, ptcl,filename);
