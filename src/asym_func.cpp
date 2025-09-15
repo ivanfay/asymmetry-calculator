@@ -174,7 +174,7 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
         }
 
         // Write 1 phi bin entry to the CSV file
-        out << phi_bin << ", " << rawY_p << ", " << rawY_n << ", " << pionY_p << ", " << pionY_n << ", " << rndY_p << ", " << rndY_n << ", " <<  Y_p << ", " << Y_n << ", " << asym << ", " << err << "\n";
+        out << phi_bin << ", " << rawY_p << ", " << rawY_n << ", " << pionY_p << ", " << pionY_n << ", " << rndY_p << ", " << rndY_n << ", " <<  Y_p << ", " << Y_n << ", " << asym << ", " << err[0] << ", " << err[1] << "\n";
         out.close();
 
     } else {
@@ -199,7 +199,7 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
         }
 
         // Write 1 phi bin entry to the CSV file
-        out << phi_bin << ", " << Y_p << ", " << Y_n << ", " << asym << ", " << err << "\n";
+        out << phi_bin << ", " << Y_p << ", " << Y_n << ", " << asym << ", " << err[0] << ", " << err[1] << "\n";
         out.close();
     }
 }
