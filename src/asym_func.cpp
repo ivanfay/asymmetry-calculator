@@ -82,6 +82,8 @@ Double_t* assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN
     Int_t bin_high = histP_vec[0]->FindBin(high);
 
     Double_t err[2];
+    Double_t pol_err[2] = {pol*0.03, pol*0.01}; // i = 0 is -3% polarization error, i = 1 is +1% polarization error
+    Double_t asym;
 
     if (ptcl == "kaonL" || ptcl == "kaonS") {
         Double_t rawY_p, pionY_p, rndY_p, rawY_n, pionY_n, rndY_n;
@@ -98,13 +100,25 @@ Double_t* assymetry_error(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN
         Double_t Y_n = rawY_n - pionY_n - rndY_n;
         Double_t sum_p = rawY_p + pionY_p + rndY_p;
         Double_t sum_n = rawY_n + pionY_n + rndY_n;
+        // error equation parts
 
+        if (Y_n + Y_p == 0) {
+            asym = 0;
+        } else {
+            asym = (1/pol) * ((Y_p - Y_n) / (abs(Y_p + Y_n)));
+        }
+
+        Double_t term1 = Y_n*Y_n*sum_p + Y_p*Y_p*sum_n;
+        Double_t term1_coef = 4/(pol*pol*pow(Y_p + Y_n, 4));
+        Double_t term2_H_pol_err = pow(asym, 2)*pow(pol_err[1], 2);
+        Double_t term2_L_pol_err = pow(asym, 2)*pow(pol_err[0], 2);
+        
         if ((pol*pow(Y_p + Y_n, 2)) == 0 || ((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n) < 0) {
             err[0] = 10;
             err[1] = 10;
         } else {
-            err[0] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
-            err[1] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
+            err[0] = sqrt(term1_coef*term1 + term2_L_pol_err);
+            err[1] = sqrt(term1_coef*term1 + term2_H_pol_err);
         }
 
         
@@ -139,6 +153,7 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
     Int_t bin_high = histP_vec[0]->FindBin(high);
 
     Double_t pol = 0.38;
+    Double_t pol_err[2] = {pol*0.03, pol*0.01}; // i = 0 is -3% polarization error, i = 1 is +1% polarization error
     Double_t asym;
     Double_t err[2];
 
@@ -158,14 +173,25 @@ void yield_to_CSV(std::vector<TH1D*> histP_vec, std::vector<TH1D*> histN_vec, Do
         Double_t sum_p = rawY_p + pionY_p + rndY_p;
         Double_t sum_n = rawY_n + pionY_n + rndY_n;
 
+        // error equation parts
+
+        if (Y_n + Y_p == 0) {
+            asym = 0;
+        } else {
+            asym = (1/pol) * ((Y_p - Y_n) / (abs(Y_p + Y_n)));
+        }
+
+        Double_t term1 = Y_n*Y_n*sum_p + Y_p*Y_p*sum_n;
+        Double_t term1_coef = 4/(pol*pol*pow(Y_p + Y_n, 4));
+        Double_t term2_H_pol_err = pow(asym, 2)*pow(pol_err[1], 2);
+        Double_t term2_L_pol_err = pow(asym, 2)*pow(pol_err[0], 2);
+
         if ((pol*pow(Y_p + Y_n, 2)) == 0 || Y_p + Y_n == 0 || ((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n) < 0) {
             err[0] = 10;
             err[1] = 10;
-            asym = 0;
         } else {
-            err[0] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
-            err[1] = (2/(pol*pow(Y_p + Y_n, 2))) * sqrt((Y_n*Y_n)*sum_p + (Y_p*Y_p)*sum_n);
-            asym = (1/pol) * ((Y_p - Y_n) / (abs(Y_p + Y_n)));
+            err[0] = sqrt(term1_coef*term1 + term2_L_pol_err);
+            err[1] = sqrt(term1_coef*term1 + term2_H_pol_err);
         }
 
         if (!header_written){
