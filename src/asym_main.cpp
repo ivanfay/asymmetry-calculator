@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
 
     std::string csv_name = "output/Yields_"+particle+"_"+shms_pos+"_"+"-t"+std::to_string(t_high).substr(1)+"-"+std::to_string(t_low).substr(1) + ".csv";
     // Asymmetry grah -pi to +pi
-    auto asym_hist = new TGraphAsymmErrors(phi_bins); //TH1D("asym_hist","Asym",phi_bins,-TMath::Pi(),TMath::Pi());
+    auto asym_hist = new TGraphAsymmErrors(); //TH1D("asym_hist","Asym",phi_bins,-TMath::Pi(),TMath::Pi());
 
     // phi bin partitioning
     Double_t single_cut_val = (2 * TMath::Pi()) / phi_bins;
@@ -285,10 +285,15 @@ int main(int argc, char* argv[]) {
     // Draw the asymmetry histogram on a separate canvas
     TCanvas *asym_canv = new TCanvas("c4","asymmetry",1600,950);
     asym_canv->cd();
-    asym_hist->DrawClone("E");
+    
+    asym_hist->SetMarkerStyle(20);
+    asym_hist->SetMarkerSize(1);
+    asym_hist->SetMarkerColor(kBlue);
+
     // Fit a sin function for later value extraction
     TF1 *sinfit = new TF1("fit1","[0]*sin(x)");
-    asym_hist->Fit(sinfit);
+    asym_hist->Fit(sinfit, "S", "", -TMath::Pi(), TMath::Pi());
+    asym_hist->Draw("AEP");
 
     SaveCanvas(asym_canv, particle, shms_pos, "-t"+std::to_string(t_high).substr(1)+"-"+std::to_string(t_low).substr(1)); // substr to remove '-'
 
