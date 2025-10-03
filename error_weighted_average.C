@@ -9,6 +9,7 @@
 #include<TROOT.h>
 #include<TF1.h>
 #include<Math/Minimizer.h>
+#include<TgraphAsymmErrors.h>
 
 #include "ROOT/RDataFrame.hxx"
 
@@ -29,9 +30,9 @@ void error_weighted_average(TString particle, TString t_bin) {
     TCanvas* r_canv = (TCanvas*)right_f->Get("c4");
     TCanvas* l_canv = (TCanvas*)left_f->Get("c4");
 
-    TH1F* center_h = (TH1F*)c_canv->FindObject("asym_hist");
-    TH1F* right_h = (TH1F*)r_canv->FindObject("asym_hist");
-    TH1F* left_h = (TH1F*)l_canv->FindObject("asym_hist");
+    TGraphAsymmErrors* center_h = (TGraphAsymmErrors*)c_canv->FindObject("asym_hist");
+    TGraphAsymmErrors* right_h = (TGraphAsymmErrors*)r_canv->FindObject("asym_hist");
+    TGraphAsymmErrors* left_h = (TGraphAsymmErrors*)l_canv->FindObject("asym_hist");
 
     Int_t nbins = center_h->GetNbinsX();
     TH1F* asym = new TH1F("asym",t_bin,nbins,-3.14,3.14);
