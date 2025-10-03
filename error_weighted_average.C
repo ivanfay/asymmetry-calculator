@@ -9,7 +9,7 @@
 #include<TROOT.h>
 #include<TF1.h>
 #include<Math/Minimizer.h>
-#include<TgraphAsymmErrors.h>
+#include<TGraphAsymmErrors.h>
 
 #include "ROOT/RDataFrame.hxx"
 
@@ -30,21 +30,21 @@ void error_weighted_average(TString particle, TString t_bin) {
     TCanvas* r_canv = (TCanvas*)right_f->Get("c4");
     TCanvas* l_canv = (TCanvas*)left_f->Get("c4");
 
-    TGraphAsymmErrors* center_h = (TGraphAsymmErrors*)c_canv->FindObject("asym_hist");
-    TGraphAsymmErrors* right_h = (TGraphAsymmErrors*)r_canv->FindObject("asym_hist");
-    TGraphAsymmErrors* left_h = (TGraphAsymmErrors*)l_canv->FindObject("asym_hist");
+    auto center_h = (TGraphAsymmErrors*)c_canv->FindObject("asym_hist");
+    auto right_h = (TGraphAsymmErrors*)r_canv->FindObject("asym_hist");
+    auto left_h = (TGraphAsymmErrors*)l_canv->FindObject("asym_hist");
 
-    Int_t nbins = center_h->GetNbinsX();
-    TH1F* asym = new TH1F("asym",t_bin,nbins,-3.14,3.14);
+    Int_t nbins = center_h->GetN();
+    auto asym = new TGraphAsymmErrors();
     
     for (Int_t i = 1; i <= nbins; ++i) {
-        Double_t nc = center_h->GetBinContent(i),
-                 nr = right_h->GetBinContent(i), 
-                 nl = left_h->GetBinContent(i);
-        
-        Double_t sc = center_h->GetBinError(i),
-                 sr = right_h->GetBinError(i),
-                 sl = left_h->GetBinError(i);
+        Double_t nc = center_h->GetPointY(i),
+                 nr = right_h->GetPointY(i), 
+                 nl = left_h->GetPointY(i);
+
+        Double_t sc = center_h->GetErrorY(i),
+                 sr = right_h->GetErrorY(i),
+                 sl = left_h->GetErrorY(i);
 
         Double_t wc, wr, wl;
         
@@ -55,8 +55,8 @@ void error_weighted_average(TString particle, TString t_bin) {
         Double_t avg = (nl*wl +nc*wc +nr*wr)/(wl+wc+wr);
         Double_t avg_err = sqrt(1/(wl+wc+wr));
 
-        asym->SetBinContent(i, avg);
-        asym->SetBinError(i, avg_err);
+        asym->SetPoint(i, center_h->GetPointX(i), avg);
+        asym->SetPointError(i, 0, 0, avg_err, avg_err);
     }
 
     wa_canv->cd();
@@ -68,15 +68,17 @@ void error_weighted_average(TString particle, TString t_bin) {
 	//asym->SetTitleSize(0.1);
 	asym->GetXaxis()->SetTitle("#phi");
 	asym->GetYaxis()->SetTitle("BSA");
-	asym->SetTitleSize(0.05,"y");
-	asym->SetLabelSize(0.04,"y");
-	asym->SetLabelSize(0.04,"x");
-	asym->SetTitleSize(0.05,"x");
-	asym->SetTitleSize(0.07,"t");
 	asym->GetYaxis()->SetRangeUser(-0.5,0.5);
 	asym->GetYaxis()->SetTitleOffset(0.8);
 	asym->GetXaxis()->SetTitleOffset(0.7);
-	asym->Draw("E0");
+	asym->Draw("AEP");
+
+    gStyle->SetOptFit(1111);
+    gStyle->SetTitleFontSize(0.05);
+    gStyle->SetTitleX(0.5);
+    gStyle->SetTitleAlign(23);
+    gStyle->SetTitleW(0.6);
+    gStyle->SetTitleY(0.95);
 	gStyle->SetTitleH(0.09);
 
     ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Migrad"); // Attempted to change minimizer to get a better fit
